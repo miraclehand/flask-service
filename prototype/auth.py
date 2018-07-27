@@ -39,7 +39,6 @@ def register():
 
 @bp.route('/login', methods = ('GET', 'POST'))
 def login():
-	print('login')
 	if request.method == 'POST':
 		username = request.form['username']
 		password = request.form['password']
@@ -55,11 +54,8 @@ def login():
 			error = 'Incorrect password.'
 
 		if error is None:
-			print(11111)
-			print(session)
 			session.clear()
 			session['user_id'] = user['id']
-			print(url_for('index'))
 			return redirect(url_for('index'))
 
 		flash(error)

@@ -16,9 +16,9 @@ def test_register(client, app):
 		).fetchone() is not None)
 
 @pytest.mark.parametrize(('username', 'password', 'message'), (
-	('', '', 'Username is required.'),
-	('a', '', 'Password is required.'),
-	('test', 'test', 'alread registered.'),
+	('', '', b'Username is required.'),
+	('a', '', b'Password is required.'),
+	('test', 'test', b'already registered.'),
 ))
 def test_register_validate_input(client, username, password, message):
 	print( 'msg', message)
@@ -32,7 +32,7 @@ def test_register_validate_input(client, username, password, message):
 def test_login(client, auth):
 	assert (client.get('/auth/login').status_code == 200)
 	response = auth.login()
-	assert (response.headers['Logcation'] == 'http://localhost/')
+	assert (response.headers['Location'] == 'http://localhost/')
 
 	with client:
 		client.get('/')
@@ -40,8 +40,8 @@ def test_login(client, auth):
 		assert (g.user['username'] == 'test')
 	
 @pytest.mark.parametrize(('username', 'password', 'message'), (
-	('a', 'test', 'Incorrect username.'),
-	('test', 'a', 'Incorrect password.'),
+	('a', 'test', b'Incorrect username.'),
+	('test', 'a', b'Incorrect password.'),
 ))
 def test_login_validate_input(auth, username, password, message):
 	response = auth.login(username, password)

@@ -38,21 +38,23 @@ def create():
 				'VALUES (?,?,?)', (title, body, g.user['id'])
 			)
 			db.commit()
-			return redirect(url_for('/'))
+			return redirect(url_for('index'))
 	return render_template('blog/create.html')
 
 def get_post(id, check_author=True):
 	post = get_db().execute(
 		'SELECT p.id, p.title, p.body, p.created, p.author_id, u.username'
 		'  FROM post p, user u'
-		' WHERE p.author_id = u.id'
-		'   AND p.author_id = ?'
-		'   AND p.id = ?',
-		(g.user['id'], id,)
+		' WHERE p.id = ?',
+		(id,)
 	).fetchone()
 
+	print(post)
 	if post is None:
-		abort(404, 'Post id ? does not exist.', (id,))
+		abort(404, 'Post id {0} does not exist.'.format(id))
+
+	if check_author and post['author_id'] != g.user['id']:
+		abort(403)
 
 	return post
 
@@ -76,19 +78,16 @@ def update(id):
 				(title, body, id, g.user['id'])
 			)
 			db.commit()
-			return redirect(url_for('/'))
+			return redirect(url_for('index'))
 	return render_template('blog/update.html', post=post)
 
-@bp.route('/<int:id>/delete', methods=('GET','POST'))
+@bp.route('/<int:id>/delete', methods=('GET', 'POST'))
 @login_required
 def delete(id):
 	if request.method == 'POST':
 		get_post(id)
 		db = get_db()
-		db.execute(
-			'DELETE FROM post'
-			' WHERE id = ?'
-			'   AND author_id = ?',
-			(id,g.user['id']))
+		db.execute('DELETE FROM post WHERE id = ?', (id,))
 		db.commit()
-	return redirect(url_for('/'))
+	print('endend')
+	return redirect(url_for('index'))
