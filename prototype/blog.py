@@ -8,10 +8,6 @@ from prototype.db import get_db
 
 bp = Blueprint('blog', __name__)
 
-@bp.route('/')
-def index():
-	return list()
-
 def list():
 	db = get_db()
 	posts = db.execute(
