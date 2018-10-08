@@ -1,4 +1,5 @@
 from flask import render_template
+from prototype.forms import LoginForm
 from flask_classy import FlaskView
 
 class View(FlaskView):
