@@ -2,8 +2,8 @@ import os
 import tempfile
 
 import pytest
+
 from prototype import create_app
-from prototype.db import get_db, init_db
 
 with open(os.path.join(os.path.dirname(__file__), 'data.sql'), 'rb') as f:
 	_data_sql = f.read().decode('utf8')
@@ -18,9 +18,6 @@ def app():
 		'SECRET_KEY': 'dev',
 	})
 
-	with app.app_context():
-		init_db()
-		get_db().executescript(_data_sql)
 	yield app
 
 	os.close(db_fd)
@@ -29,6 +26,7 @@ def app():
 @pytest.fixture
 def client(app):
 	return app.test_client()
+"""
 
 @pytest.fixture
 def runner(app):
@@ -50,3 +48,4 @@ class AuthActions(object):
 @pytest.fixture
 def auth(client):
 	return AuthActions(client)
+"""
